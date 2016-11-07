@@ -17,9 +17,11 @@ def importData():
     data = list()
     officer = dict()
     complainants = dict()
-    hi = 0
+    pt_ct = 0
+    # {'1': ['officer_M', 'officer_White', 'PO'], '2': ['officer_F', 'officer_Hispanic', 'PO']}
     for row in officers_sheet.iter_rows(row_offset=1):
         officer[str(row[0].value)] = ["officer_" + str(row[1].value), "officer_" + str(row[2].value), str(row[3].value)]
+    # {'1043921': ['complain_F', 'complain_White/Hispanic'], '1043909': ['complain_F', 'complain_Black']}
     for row in complainants_sheet.iter_rows(row_offset=1):
         complainants[str(row[1].value)] = ["complain_" + str(row[2].value), "complain_" + str(row[5].value)]
     for row in allegations_sheet.iter_rows(row_offset=1):
@@ -35,6 +37,7 @@ def importData():
                     data.append((all_info, 0))
                 elif verdict == 'sustained':
                     data.append((all_info, 1))
+    # (['operation/personnel violations', 'officer_M', 'officer_White', 'PO', 'complain_M', 'complain_Black'], 0)
     return data
 
 
