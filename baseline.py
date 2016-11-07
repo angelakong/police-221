@@ -66,6 +66,7 @@ def learnPredictor(trainExamples, testExamples, featureExtractor, numIters, eta)
             featuresExtracted = featureExtractor(a)
             if (dotProduct(weights, featuresExtracted) * b) < 1:
                 increment(weights, b * eta, featuresExtracted)
+    print weights
     return weights  
 
 data = importData()
