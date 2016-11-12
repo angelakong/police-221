@@ -75,7 +75,7 @@ data = importData()
 trainExamples = list()
 testExamples = list()
 posCount = 0
-for i in xrange(300):
+for i in xrange(3000):
     trainExamples.append(data[i])
     if data[i][1] == 1:
         posCount += 1
