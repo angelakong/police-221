@@ -1,0 +1,39 @@
+outcome,outcome_edit,value
+0,Noted,0
+1,1,1
+2,2,2
+3,3,3
+4,4,4
+5,5,5
+6,6,6
+7,7,7
+8,8,8
+10,10,10
+12,12,12
+13,13,13
+15,15,15
+16,16,16
+18,18,18
+20,20,20
+21,21,21
+22,22,22
+23,23,23
+25,25,25
+28,28,28
+30,30,30
+45,45,45
+60,60,60
+90,90,90
+100,Reprimand,0
+120,120,120
+180,180,180
+200,Over 30,60
+300,Administrative Termination,x
+400,Separation,x
+500,Reinstated - Board,0
+600,Unsustained,0
+700,Reinstated - Court,0
+800,Resigned,r
+900,Not Served,0
+,Unknown,?
+999,Unknown,?
