@@ -1,0 +1,10 @@
+finding,finding_edit,result
+DS,Discharged,Unsustained
+EX,Exonerated,Unsustained
+NA,No Affidavit,Unsustained
+NC,No Cooperation,Unsustained
+NS,Not Sustained,Unsustained
+SU,Sustained,Sustained
+,Unknown,Unknown
+,Unknown,Unknown
+UN,Unfounded,Unsustained
