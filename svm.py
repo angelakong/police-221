@@ -19,8 +19,8 @@ sparse = df.copy(deep=True)
 print "Original shape of csv"
 print df.shape
 
-# Filter all the rows where the police behave properly is not equal to -9.
-df.loc[df['V346'] != -9]
+# Filter all the rows where the police behave properly or did not behave properly.
+df.loc[df['V347'] != 9]
 
 print "Filtered shape of CSV"
 print df.shape
@@ -28,18 +28,15 @@ print df.shape
 features = df.columns.values
 
 # Classification vector: "POLICE BEHAVE PROPERLY - V347"
-y = df['V346']
+y = sparse['V347']
+y[y == 2] = 0  # Police did not behave properly 
+y[y == 1] = 1  # Police behaved properly
 
 # Preprocess the data for modeling.
-for f in features:
-	delete = ['V346']
-	if any(word in f for word in delete):
-		sparse.drop(f, axis=1, inplace=True)
+sparse.drop('V347', axis=1, inplace=True)
 
-x_learn = sparse[1:500]
-y_learn = y[1:500]
-print x_learn.shape
-print y_learn.shape
+x_learn = sparse[0:500]
+y_learn = y[0:500]
 
 clf = svm.SVC()
 clf.fit(x_learn,y_learn)
@@ -47,19 +44,26 @@ clf.fit(x_learn,y_learn)
 numTestData = 500
 x_test = sparse[500:1000]
 y_test = y[500:1000]
+numTestData = 500
 
-# SVM
-# predictions = []
-# predictions = clf.predict(x_test)
+# Create a linear regression object, train using the training sets
+regr = LinearRegression(fit_intercept=True, normalize=True)
+regr.fit(x_learn, y_learn)
 
-# error = sum(y_test * predictions <= 0) / numTestData
-# print("Test error for SVM: " + str(error))
+# The coefficients
+print('Coefficients: \n', regr.coef_)
+# The mean squared error
+print("Mean squared error: %.2f"
+      % numpy.mean((regr.predict(x_test) - y_test) ** 2))
+# Explained variance score: 1 is perfect prediction
+print('Variance score: %.2f' % regr.score(x_test, y_test))
 
-# Linear Regression
+# Plot outputs
+plt.scatter(x_test, y_test, color='black')
+plt.plot(x_test, regr.predict(x_test), color='blue',
+         linewidth=3)
 
-# fit OLS regression 
-est = LinearRegression(fit_intercept=True, normalize=True)
-est.fit(x_train, y_train)
+plt.xticks(())
+plt.yticks(())
 
-# Test data that was not used for fiting
-
+plt.show()

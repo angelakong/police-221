@@ -93,6 +93,8 @@ for f in features:
 
 X = sparse[1:500]
 ytrain = y[1:500]
+print X.shape
+print ytrain.shape
 
 #for kernel in ('linear', 'poly', 'rbf'):
 
