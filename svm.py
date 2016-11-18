@@ -2,7 +2,12 @@ import json
 import numpy
 import pandas
 from sklearn import svm
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.cross_validation import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import cross_val_score
+from sklearn.grid_search import GridSearchCV
+from sklearn import metrics
 from sklearn.metrics import confusion_matrix
 from numpy import array
 from array import *
@@ -35,35 +40,30 @@ y[y == 1] = 1  # Police behaved properly
 # Preprocess the data for modeling.
 sparse.drop('V347', axis=1, inplace=True)
 
-x_learn = sparse[0:500]
-y_learn = y[0:500]
+# Train with logistic regression model.
+X_train, X_test, y_train, y_test = train_test_split(sparse, y, random_state=0)
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+y_pred_class = logreg.predict(X_test)
+print "The accuracy from training on Logistic Regression is: "
+print(metrics.accuracy_score(y_test, y_pred_class))
+print(metrics.confusion_matrix(y_test, y_pred_class))
 
-clf = svm.SVC()
-clf.fit(x_learn,y_learn)
+# Baseline: null accuracy -- the accuracy that can be achieved by predicting most frequent class.
+zeros = 1 - y_test.mean()  # The percentage of 0's (behaved improperly)
+print "The baseline null accuracy is: "
+print max(y_test.mean(), 1 - y_test.mean())
 
-numTestData = 500
-x_test = sparse[500:1000]
-y_test = y[500:1000]
-numTestData = 500
+# Train with KNN model. 
+# Tune the parameters of K, as well as the weight of features (weighted as 1/d depending on distance of a point from the cluster mean)
+knn = KNeighborsClassifier()
+k_range = list(range(1, 31))
+weight_options = ['uniform', 'distance']
 
-# Create a linear regression object, train using the training sets
-regr = LinearRegression(fit_intercept=True, normalize=True)
-regr.fit(x_learn, y_learn)
+param_grid = dict(n_neighbors = k_range, weights = weight_options)
+grid = GridSearchCV(knn, param_grid, cv=5, scoring = 'accuracy')
+grid.fit(sparse, y)
 
-# The coefficients
-print('Coefficients: \n', regr.coef_)
-# The mean squared error
-print("Mean squared error: %.2f"
-      % numpy.mean((regr.predict(x_test) - y_test) ** 2))
-# Explained variance score: 1 is perfect prediction
-print('Variance score: %.2f' % regr.score(x_test, y_test))
-
-# Plot outputs
-plt.scatter(x_test, y_test, color='black')
-plt.plot(x_test, regr.predict(x_test), color='blue',
-         linewidth=3)
-
-plt.xticks(())
-plt.yticks(())
-
-plt.show()
+print "The best score and best params are: "
+print(grid.best_score_)
+print(grid.best_params_)
