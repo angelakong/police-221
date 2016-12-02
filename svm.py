@@ -25,7 +25,6 @@ print "Original shape of csv"
 print df.shape
 
 # Filter all the rows where the police behave properly or did not behave properly.
-df.loc[df['V347'] != 9]
 
 print "Filtered shape of CSV"
 print df.shape
@@ -33,8 +32,11 @@ print df.shape
 features = df.columns.values
 
 # Classification vector: "POLICE BEHAVE PROPERLY - V347"
+# Look into multi-class classification.
 y = sparse['V347']
 y[y == 2] = 0  # Police did not behave properly 
+y[y == 8] = 0
+y[y == 3] = 0
 y[y == 1] = 1  # Police behaved properly
 
 # Preprocess the data for modeling.
@@ -47,7 +49,9 @@ logreg.fit(X_train, y_train)
 y_pred_class = logreg.predict(X_test)
 print "The accuracy from training on Logistic Regression is: "
 print(metrics.accuracy_score(y_test, y_pred_class))
-print(metrics.confusion_matrix(y_test, y_pred_class))
+confusion_matrix(y_test, y_pred_class)
+confusion_matrix = pandas.crosstab(y_test, y_pred_class, rownames=['Actual'], colnames=['Predicted'], margins=True)
+print confusion_matrix
 
 # Baseline: null accuracy -- the accuracy that can be achieved by predicting most frequent class.
 zeros = 1 - y_test.mean()  # The percentage of 0's (behaved improperly)
